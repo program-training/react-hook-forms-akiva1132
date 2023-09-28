@@ -99,12 +99,6 @@ function RegularForm() {
         {errors.password?.type === 'maxLength' && <p role="alert">password is maxLength</p>}
         {errors.password?.type === 'pattern' && <p role="alert">password is pattern</p>}
       </div>
-      <div>
-      <select name={name} ref={ref} onChange={onChange} onBlur={onBlur}>
-      <option value="20">20</option>
-      <option value="30">30</option>
-    </select
-      </div>
       <button type="submit">Submit</button>
     </form>
   );

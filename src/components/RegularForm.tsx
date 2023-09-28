@@ -1,21 +1,27 @@
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent } from "react";
 import { useForm } from "react-hook-form";
 
-import "./RegularForm.css"
-import React from 'react';
+import "./RegularForm.css";
+import React from "react";
 
 interface FormData {
   username: string;
   email: string;
   password: string;
+  gender: string;
 }
 
-
+interface Props {
+  field: string;
+  messege: any;
+}
+const errorMassege = (props: Props) => {
+  return <p>{`${props.field} ${props.messege}`}</p>;
+};
 
 export function App() {
   const { register, handleSubmit } = useForm();
-  const onSubmit = data => console.log(data);
-
+  const onSubmit = (data: any) => console.log(data);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -30,13 +36,17 @@ export function App() {
   );
 }
 
-
 function RegularForm() {
-  const { register, formState: { errors }, handleSubmit } = useForm();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
   const [formData, setFormData] = useState<FormData>({
-    username: '',
-    email: '',
-    password: '',
+    username: "",
+    email: "",
+    password: "",
+    gender: "",
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -53,51 +63,93 @@ function RegularForm() {
   };
 
   return (
-    <form id='form' onSubmit={handleSubmit(onSubmit)}>
+    <form id="form" onSubmit={handleSubmit(onSubmit)}>
       <h1>Change Me To React Hook Form</h1>
       <div>
         <input
           type="text"
           id="username"
-          placeholder='Enter UserName'
-          {...register("username", { required: true, minLength: 2 })}
+          placeholder="Enter UserName"
+          {...register("username", {
+            required: { value: true, message: "is required" },
+            minLength: { value: 4, message: "is minLength" },
+          })}
           value={formData.username}
           onChange={handleChange}
           aria-invalid={errors.username ? "true" : "false"}
         />
-        {errors.username?.type === 'required' && <p role="alert">First name is required</p>}
-        {errors.username?.type === 'minLength' && <p role="alert">First name is minLength</p>}
-
+        {errors.username
+          ? errorMassege({
+              field: "username",
+              messege: errors.username?.message,
+            })
+          : null}
       </div>
 
       <div>
         <input
           type="text"
           id="email"
-          placeholder='Enter Email'
-          {...register("email", { required: true, minLength: 4, pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/ })}
+          placeholder="Enter Email"
+          {...register("email", {
+            required: { value: true, message: "is required" },
+            minLength: { value: 4, message: "is minLength" },
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: "is unsupported",
+            },
+          })}
           value={formData.email}
           onChange={handleChange}
           aria-invalid={errors.email ? "true" : "false"}
         />
-        {errors.email?.type === 'required' && <p role="alert">email is required</p>}
-        {errors.email?.type === 'minLength' && <p role="alert">email is pattern</p>}
+        {errors.email
+          ? errorMassege({ field: "email", messege: errors.email.message })
+          : null}
       </div>
 
       <div>
         <input
           type="text"
           id="password"
-          placeholder='Enter Password'
-          {...register("password", { required: true, minLength: 8, maxLength: 20, pattern: /(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?":{}|<>])/ })}
+          placeholder="Enter Password"
+          {...register("password", {
+            required: { value: true, message: "is required" },
+            minLength: { value: 8, message: "is minLength" },
+            maxLength: { value: 20, message: "is maxLength" },
+            pattern: {
+              value:
+                /(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*(),.?":{}|<>])/,
+              message: "is unsupported",
+            },
+          })}
           value={formData.password}
           onChange={handleChange}
           aria-invalid={errors.password ? "true" : "false"}
         />
-        {errors.password?.type === 'required' && <p role="alert">password is required</p>}
-        {errors.password?.type === 'minLength' && <p role="alert">password is minLength</p>}
-        {errors.password?.type === 'maxLength' && <p role="alert">password is maxLength</p>}
-        {errors.password?.type === 'pattern' && <p role="alert">password is pattern</p>}
+        {errors.password
+          ? errorMassege({
+              field: "password",
+              messege: errors.password.message,
+            })
+          : null}
+      </div>
+      <div>
+        <select
+          {...register("gender", {
+            required: { value: true, message: "is required" },
+          })}
+          name="gender"
+          onChange={(v) => handleChange(v)}
+          value={formData.gender}
+          id="">
+          <option value="">gender</option>
+          <option value="male">male</option>
+          <option value="famale">famale</option>
+        </select>
+        {errors.gender
+          ? errorMassege({ field: "gender", messege: errors.gender.message })
+          : null}
       </div>
       <button type="submit">Submit</button>
     </form>

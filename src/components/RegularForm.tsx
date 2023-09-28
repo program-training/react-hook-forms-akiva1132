@@ -1,8 +1,5 @@
-import { useState, ChangeEvent, FormEvent } from "react";
-import { useForm } from "react-hook-form";
-
+import {  useForm } from "react-hook-form";
 import "./RegularForm.css";
-import React from "react";
 
 interface FormData {
   username: string;
@@ -19,47 +16,17 @@ const errorMassege = (props: Props) => {
   return <p>{`${props.field} ${props.messege}`}</p>;
 };
 
-export function App() {
-  const { register, handleSubmit } = useForm();
-  const onSubmit = (data: any) => console.log(data);
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register("firstName")} />
-      <select {...register("gender")}>
-        <option value="female">female</option>
-        <option value="male">male</option>
-        <option value="other">other</option>
-      </select>
-      <input type="submit" />
-    </form>
-  );
-}
 
 function RegularForm() {
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm();
-  const [formData, setFormData] = useState<FormData>({
-    username: "",
-    email: "",
-    password: "",
-    gender: "",
-  });
+  } = useForm<FormData>();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
-  const onSubmit = () => {
-    // e.preventDefault();
-    alert(JSON.stringify(formData));
+  const onSubmit = (data: FormData) => {
+    alert(JSON.stringify(data));
   };
 
   return (
@@ -74,8 +41,7 @@ function RegularForm() {
             required: { value: true, message: "is required" },
             minLength: { value: 4, message: "is minLength" },
           })}
-          value={formData.username}
-          onChange={handleChange}
+
           aria-invalid={errors.username ? "true" : "false"}
         />
         {errors.username
@@ -99,8 +65,6 @@ function RegularForm() {
               message: "is unsupported",
             },
           })}
-          value={formData.email}
-          onChange={handleChange}
           aria-invalid={errors.email ? "true" : "false"}
         />
         {errors.email
@@ -123,8 +87,6 @@ function RegularForm() {
               message: "is unsupported",
             },
           })}
-          value={formData.password}
-          onChange={handleChange}
           aria-invalid={errors.password ? "true" : "false"}
         />
         {errors.password
@@ -139,10 +101,7 @@ function RegularForm() {
           {...register("gender", {
             required: { value: true, message: "is required" },
           })}
-          name="gender"
-          onChange={(v) => handleChange(v)}
-          value={formData.gender}
-          id="">
+          name="gender">
           <option value="">gender</option>
           <option value="male">male</option>
           <option value="famale">famale</option>

@@ -1,4 +1,5 @@
-import {  useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 import "./RegularForm.css";
 
 interface FormData {
@@ -16,14 +17,12 @@ const errorMassege = (props: Props) => {
   return <p>{`${props.field} ${props.messege}`}</p>;
 };
 
-
 function RegularForm() {
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm<FormData>();
-
 
   const onSubmit = (data: FormData) => {
     alert(JSON.stringify(data));
@@ -41,15 +40,14 @@ function RegularForm() {
             required: { value: true, message: "is required" },
             minLength: { value: 4, message: "is minLength" },
           })}
-
           aria-invalid={errors.username ? "true" : "false"}
         />
-        {errors.username
-          ? errorMassege({
-              field: "username",
-              messege: errors.username?.message,
-            })
-          : null}
+        {errors.username &&
+          <ErrorMessage
+          errors={errors}
+          name="username"
+          render={({ message }) => <p>{message}</p>}
+        />}
       </div>
 
       <div>
@@ -101,7 +99,8 @@ function RegularForm() {
           {...register("gender", {
             required: { value: true, message: "is required" },
           })}
-          name="gender">
+          name="gender"
+        >
           <option value="">gender</option>
           <option value="male">male</option>
           <option value="famale">famale</option>
